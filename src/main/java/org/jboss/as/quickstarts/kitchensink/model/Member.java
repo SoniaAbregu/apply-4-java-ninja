@@ -36,58 +36,71 @@ import org.hibernate.validator.constraints.NotEmpty;
 @SuppressWarnings("serial")
 @Entity
 @XmlRootElement
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = "name"),
+		@UniqueConstraint(columnNames = "email") })
 public class Member implements Serializable {
 
-    @Id
-    @GeneratedValue
-    private Long id;
+	@Id
+	@GeneratedValue
+	private Long id;
 
-    @NotNull
-    @Size(min = 1, max = 25)
-    @Pattern(regexp = "[^0-9]*", message = "Must not contain numbers")
-    private String name;
+	@NotNull
+	@Size(min = 1, max = 25)
+	@Pattern(regexp = "[^0-9]*", message = "Must not contain numbers")
+	private String name;
 
-    @NotNull
-    @NotEmpty
-    @Email
-    private String email;
+	@NotNull
+	@NotEmpty
+	@Email
+	private String email;
 
-    @NotNull
-    @Size(min = 10, max = 12)
-    @Digits(fraction = 0, integer = 12)
-    @Column(name = "phone_number")
-    private String phoneNumber;
+	@NotNull
+	@Size(min = 10, max = 12)
+	@Digits(fraction = 0, integer = 12)
+	@Column(name = "phone_number")
+	private String phoneNumber;
 
-    public Long getId() {
-        return id;
-    }
+	@NotNull
+	@NotEmpty
+	private String address;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
 }

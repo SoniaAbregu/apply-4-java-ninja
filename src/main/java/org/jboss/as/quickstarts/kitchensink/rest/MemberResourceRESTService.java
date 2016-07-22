@@ -107,7 +107,12 @@ public class MemberResourceRESTService {
         } catch (ValidationException e) {
             // Handle the unique constrain violation
             Map<String, String> responseObj = new HashMap<>();
-            responseObj.put("email", "Email taken");
+            String key = e.getMessage().substring(0,e.getMessage().indexOf(":"));
+           	String value = e.getMessage().substring(e.getMessage().indexOf(":")+1,e.getMessage().length()-1);
+           	
+           // responseObj.put("name", "Email taken");
+           	
+           	responseObj.put(key, value);
             builder = Response.status(Response.Status.CONFLICT).entity(responseObj);
         } catch (Exception e) {
             // Handle generic exceptions
@@ -141,9 +146,14 @@ public class MemberResourceRESTService {
             throw new ConstraintViolationException(new HashSet<ConstraintViolation<?>>(violations));
         }
 
+        // Check the uniqueness of the name
+        if (nameAlreadyExists(member.getName())) {
+        	throw new ValidationException("name:Name taken");
+        }
+        
         // Check the uniqueness of the email address
         if (emailAlreadyExists(member.getEmail())) {
-            throw new ValidationException("Unique Email Violation");
+            throw new ValidationException("email:Email taken");
         }
     }
 
@@ -177,6 +187,23 @@ public class MemberResourceRESTService {
         Member member = null;
         try {
             member = repository.findByEmail(email);
+        } catch (NoResultException e) {
+            // ignore
+        }
+        return member != null;
+    }
+    
+    /**
+     * Checks if a member with the same name is already registered. This is the only way to easily capture the
+     * "@UniqueConstraint(columnNames = "name")" constraint from the Member class.
+     *
+     * @param name The name to check
+     * @return True if the name already exists, and false otherwise
+     */
+    public boolean nameAlreadyExists(String name) {
+        Member member = null;
+        try {
+            member = repository.findByName(name);
         } catch (NoResultException e) {
             // ignore
         }
